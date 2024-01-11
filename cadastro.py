@@ -1,66 +1,91 @@
-def Rcadastro(cp=0):
+def cadastro(cp=0):
+    """
+    Função utilizada para criar/editar um cadastro,
+    será salvo em outro arquivo e permanecerá lá
+    mesmo após o encerramento da função.
+
+    :param cp: Serve para receber o código de cor padrão do sistema,
+    caso não tenha preferência, ou prefira a cor padrão digite 0.
+
+    :return: Nenhum
+    """
     import json
-    men = 0
-    while men != 4:
+    from time import sleep
+
+    menu = 0
+    while menu != 5:
         print(f"\033[34mAqui você pode cadastrar a pessoa desejada para deixar salvo."
               f"\nCADASTRAR \t[1]"
               f"\nCADASTROS \t[2]"
               f"\nEDITAR \t{'[3]':>7}"
-              f"\nSAIR \t{'[4]':>7}")
-        men = 0
-        while 4 < men or men < 1:
+              f"\nEXCLUIR \t[4]"
+              f"\nSAIR \t{'[5]':>7}")
+        menu = 0
+        while 5 < menu or menu < 1:
             print('\033[32m')
             while True:
                 try:
-                    men = int(input('Digite sua opção: '))
+                    menu = int(input('Digite sua opção: '))
                 except ValueError:
                     print('\033[31m-' * 40)
                     print('Opção inválida, digite novamente!')
                     print('-' * 40, '\n\033[32m')
-                else:
+                except KeyboardInterrupt:
+                    menu = 5
+                    print()
                     break
+                else:
+                    if menu > 5 or menu < 1:
+                        print('\033[31m-' * 40)
+                        print('Opção inválida, digite novamente!')
+                        print('-' * 40, '\n\033[32m')
+                    else:
+                        break
 
-        with open('C:/Users/joaoh/PycharmProjects/pitõesinhos/Rarmazenamento.json', 'r') as dados:
-            x = json.load(dados)
-        if men == 1:
+        with open('C:/armazenamento.json', 'r') as dados:
+            lista = json.load(dados)
+        if menu == 1:
             print('-' * 40)
             while True:
                 nome = input('Nome: ').title()
                 xn = nome.split()
                 z = 0
-                for y in range(0, len(xn)):
-                    if not xn[y].isalpha():
+                for x in range(0, len(xn)):
+                    if not xn[x].isalpha():
                         z += 1
                 if z == 0:
                     break
                 else:
                     print(f'\033[31mNome inserido de forma incorreta!\033[{cp}m\n')
-            x["nome"].append(nome)
+            lista["nome"].append(nome)
             while True:
                 try:
-                    x["idade"].append(int(input('Idade: ')))
+                    lista["idade"].append(int(input('Idade: ')))
                 except ValueError:
-                    print('\033[31Idade inserida de forma incorreta!\033[{cp}m\n')
+                    print(f'\033[31mIdade inserida de forma incorreta!\033[{cp}m\n')
                 else:
                     print('\nDados registrados')
+                    sleep(0.7)
                     break
-            with open('C:/Users/joaoh/PycharmProjects/pitõesinhos/Rarmazenamento.json', 'w') as dados:
-                json.dump(x, dados)
+            with open('C:/armazenamento.json', 'w') as dados:
+                json.dump(lista, dados)
             print('-' * 40, '\n\033[34m')
-        elif men == 2:
+        elif menu == 2:
             print('-' * 40)
-            nu = len(x['nome'])
-            for y in range(0, nu):
-                print(f'{y + 1}- {x["nome"][y]}, {x["idade"][y]}', 'anos' if x["idade"][y] > 1 else 'ano')
+            num = len(lista['nome'])
+            for x in range(0, num):
+                print(f'{x + 1}- {lista["nome"][x]}, {lista["idade"][x]}', 'anos' if lista["idade"][x] > 1 else 'ano')
             print('-' * 40, '\n\033[34m')
-        elif men == 3:
+            sleep(1)
+        elif menu == 3:
             print('-' * 40, '\n\033[34m')
-            nu = len(x['nome'])
-            for y in range(0, nu):
-                print(f'{y + 1}- {x["nome"][y]}, {x["idade"][y]} anos')
+            num = len(lista['nome'])
+            for x in range(0, num):
+                print(f'{x + 1}- {lista["nome"][x]}, {lista["idade"][x]} anos')
+            sleep(1)
             while True:
                 try:
-                    t = int(input('\nDigite o número de quem você deseja editar: '))-1
+                    edit = int(input('\nDigite o número de quem você deseja editar: ')) - 1
                 except ValueError:
                     print('Opção inválida!')
                 else:
@@ -71,27 +96,52 @@ def Rcadastro(cp=0):
                     break
                 xn = nome.split()
                 z = 0
-                for y in range(0, len(xn)):
-                    if not xn[y].isalpha():
+                for x in range(0, len(xn)):
+                    if not xn[x].isalpha():
                         z += 1
                 if z == 0:
                     break
                 else:
                     print(f'\033[31mNome inserido de forma incorreta!\033[{cp}m\n')
             if nome != '00':
-                x["nome"][t] = nome
+                lista["nome"][edit] = nome
             while True:
                 try:
-                    save = x["idade"][t]
-                    x["idade"][t] = (int(input('\nAtualize a idade (Digite 00 para não alterar): ')))
-                    if x["idade"][t] == 00:
-                        x["idade"][t] = save
+                    save = lista["idade"][edit]
+                    lista["idade"][edit] = (int(input('\nAtualize a idade (Digite 00 para não alterar): ')))
+                    if lista["idade"][edit] == 00:
+                        lista["idade"][edit] = save
                         break
                 except ValueError:
-                    print('\033[31Idade inserida de forma incorreta!\033[{cp}m\n')
+                    print(f'\033[31mIdade inserida de forma incorreta!\033[34m\n')
                 else:
                     print('\nDados registrados')
                     break
-            with open('C:/Users/joaoh/PycharmProjects/pitõesinhos/Rarmazenamento.json', 'w') as dados:
-                json.dump(x, dados)
+            with open('C:/armazenamento.json', 'w') as dados:
+                json.dump(lista, dados)
             print('-' * 40, '\n\033[34m')
+        elif menu == 4:
+            print('-' * 40, '\n\033[34m')
+            for x in range(0, len(lista['nome'])):
+                print(f'{x + 1}- {lista["nome"][x]}, {lista["idade"][x]} anos')
+            sleep(1)
+            while True:
+                try:
+                    print(len(lista['nome']))
+                    ex = int(input('\nDigite o núemro de quem você deseja excluir: '))
+                except ValueError:
+                    print('\033[31mInformação inserida de forma incorreta!\033[m')
+                else:
+                    if len(lista['nome']) < ex or ex < 1:
+                        print('\033[31mInformação inserida de forma incorreta!\033[34m')
+                    else:
+                        break
+            print(ex)
+            lista['nome'].remove(lista['nome'][ex-1]), lista['idade'].remove(lista['idade'][ex-1])
+            with open('C:/armazenamento.json', 'w') as dados:
+                json.dump(lista, dados)
+            print('-' * 40, '\n\033[34m')
+        elif menu == 5:
+            print('\nFinalizando programa', end=''), sleep(0.5)
+            for z in range(0, 3):
+                print('.', end=''), sleep(0.5)
